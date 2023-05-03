@@ -1,5 +1,6 @@
 const { getAll } = require('../models/user');
 const User = require('../models/user');
+const Rol = require('../models/rol');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 
@@ -19,15 +20,18 @@ module.exports = {
             });
         }
     },
-
+      
     async register(req, res, next) {
         try {
             const user = req.body;
             const data = await User.create(user);
 
+
+            await Rol.create(data.id, 1); //ROL POR DEFECTO (CLIENTE)
+
             return res.status(201).json({
                 success: true,
-                message: 'El registro se realizó correctamente',
+                message: 'El registro se realizó correctamente, ahora inicia sesion',
                 data: data.id
             });
         } catch (error) {
@@ -65,8 +69,12 @@ module.exports = {
                     email: myUser.email,
                     phone: myUser.phone,
                     image: myUser.image,
-                    session_token: `JWT ${token}`
+                    session_token: `JWT ${token}`,
+                    roles: myUser.roles
                 }
+
+                console.log(`USUARIO ENVIADO ${data}`);
+
                 return res.status(201).json({
                     success: true,
                     data: data,

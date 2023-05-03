@@ -4,7 +4,9 @@ const User = require('../models/user');
 const Keys = require('./keys');
 
 module.exports = function (passport) {
+
     let opts = {};
+
     opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('jwt');
     opts.secretOrKey = Keys.secretOrKey;
     passport.use(new JwtStrategy(opts, (jwt_playload, done) => {
@@ -18,7 +20,7 @@ module.exports = function (passport) {
             else {
                 return done(null, false);
             }
-        }
+        })
     }))
 }
 
